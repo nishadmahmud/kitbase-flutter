@@ -11,7 +11,12 @@ class ToolActions extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(top: 24.0),
-      child: Row(mainAxisAlignment: MainAxisAlignment.end, children: children),
+      child: Wrap(
+        alignment: WrapAlignment.center,
+        spacing: 12,
+        runSpacing: 12,
+        children: children,
+      ),
     );
   }
 }

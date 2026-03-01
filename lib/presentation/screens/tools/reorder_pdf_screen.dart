@@ -573,7 +573,7 @@ class _ReorderPdfScreenState extends State<ReorderPdfScreen> {
                   child: AnimatedContainer(
                     duration: const Duration(milliseconds: 200),
                     transform: isDragging
-                        ? (Matrix4.identity()..scale(0.95))
+                        ? Matrix4.diagonal3Values(0.95, 0.95, 1.0)
                         : Matrix4.identity(),
                     transformAlignment: Alignment.center,
                     child: _buildPageCard(page, index),

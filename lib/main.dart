@@ -6,6 +6,7 @@ import 'presentation/screens/all_tools/all_tools_screen.dart';
 import 'presentation/screens/tools/merge_pdf_screen.dart';
 import 'presentation/screens/tools/split_pdf_screen.dart';
 import 'presentation/screens/tools/reorder_pdf_screen.dart';
+import 'presentation/screens/tools/compress_pdf_screen.dart';
 import 'presentation/screens/settings/settings_screen.dart';
 import 'presentation/screens/category/category_screen.dart';
 
@@ -99,6 +100,15 @@ class AppRouter {
             onNavigate: (route) =>
                 handleNavigation(context, '/tools/pdf/reorder', route),
             child: const ReorderPdfScreen(),
+          ),
+        );
+      case '/tools/pdf/compress':
+        return MaterialPageRoute(
+          builder: (context) => MainLayout(
+            currentRoute: '/tools/pdf/compress',
+            onNavigate: (route) =>
+                handleNavigation(context, '/tools/pdf/compress', route),
+            child: const CompressPdfScreen(),
           ),
         );
       default:

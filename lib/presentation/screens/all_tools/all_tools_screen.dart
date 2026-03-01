@@ -14,7 +14,7 @@ class AllToolsScreen extends StatelessWidget {
       slivers: [
         SliverToBoxAdapter(
           child: Padding(
-            padding: const EdgeInsets.fromLTRB(24, 40, 24, 64),
+            padding: const EdgeInsets.fromLTRB(24, 40, 24, 120),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [

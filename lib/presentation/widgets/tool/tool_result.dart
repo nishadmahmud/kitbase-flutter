@@ -104,12 +104,12 @@ class ToolResult extends StatelessWidget {
           ],
           if (success && actions != null && actions!.isNotEmpty) ...[
             const SizedBox(height: 24),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 for (int i = 0; i < actions!.length; i++) ...[
-                  if (i > 0) const SizedBox(width: 16),
-                  Expanded(child: actions![i]),
+                  if (i > 0) const SizedBox(height: 12),
+                  actions![i],
                 ],
               ],
             ),

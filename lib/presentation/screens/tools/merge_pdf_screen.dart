@@ -166,9 +166,11 @@ class _MergePdfScreenState extends State<MergePdfScreen> {
         return SingleChildScrollView(
           controller: _scrollController,
           child: Padding(
-            padding: EdgeInsets.symmetric(
-              horizontal: isDesktop ? 48.0 : 24.0,
-              vertical: 40.0,
+            padding: EdgeInsets.only(
+              left: isDesktop ? 48.0 : 24.0,
+              right: isDesktop ? 48.0 : 24.0,
+              top: 40.0,
+              bottom: 100.0,
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,

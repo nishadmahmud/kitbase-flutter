@@ -13,6 +13,7 @@ import 'package:kitbase_flutter/presentation/widgets/tool/tool_file_list.dart';
 import 'package:kitbase_flutter/presentation/widgets/tool/tool_actions.dart';
 import 'package:kitbase_flutter/presentation/widgets/tool/tool_sidebar.dart';
 import 'package:kitbase_flutter/presentation/widgets/tool/tool_result.dart';
+import 'package:kitbase_flutter/core/constants/tools_registry.dart';
 
 // Top-level function for background isolate processing
 Future<Uint8List> _mergePdfsTask(List<Uint8List> inputs) async {
@@ -56,7 +57,6 @@ class _MergePdfScreenState extends State<MergePdfScreen> {
   bool _isLoading = false;
   Uint8List? _mergedBytes;
   String? _mergedFileName;
-  String? _mergedFileSize;
 
   @override
   void dispose() {
@@ -125,13 +125,6 @@ class _MergePdfScreenState extends State<MergePdfScreen> {
       // 2. Run the heavy synchronous PDF packing logic in a background isolate
       final Uint8List mergedBytes = await compute(_mergePdfsTask, allPdfBytes);
 
-      // Format file size
-      int bytesLen = mergedBytes.length;
-      String sizeStr = "${(bytesLen / 1024 / 1024).toStringAsFixed(2)} MB";
-      if (bytesLen < 1024 * 1024) {
-        sizeStr = "${(bytesLen / 1024).toStringAsFixed(2)} KB";
-      }
-
       // Scroll back to top to show the ToolResult clearly
       if (_scrollController.hasClients) {
         _scrollController.animateTo(
@@ -145,7 +138,6 @@ class _MergePdfScreenState extends State<MergePdfScreen> {
         _mergedBytes = mergedBytes;
         _mergedFileName =
             'kitbase-merged-${DateTime.now().millisecondsSinceEpoch}.pdf';
-        _mergedFileSize = sizeStr;
         _isLoading = false;
       });
     } catch (e) {
@@ -181,14 +173,10 @@ class _MergePdfScreenState extends State<MergePdfScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const ToolHeader(
-                  title: "Merge PDF",
-                  description:
-                      "Combine multiple PDF files into a single document with ease and speed.",
-                  breadcrumbs: [
-                    {'label': "Home", 'href': "/"},
-                    {'label': "Merge PDF"},
-                  ],
+                ToolHeader(
+                  tool: ToolsRegistry.tools.firstWhere(
+                    (t) => t.slug == 'merge',
+                  ),
                 ),
 
                 if (isDesktop)
@@ -274,10 +262,31 @@ class _MergePdfScreenState extends State<MergePdfScreen> {
         children: [
           ToolResult(
             success: true,
-            message: "PDFs merged successfully!",
-            fileSize: _mergedFileSize,
+            message: "PDF Merged Successfully",
+            fileSize:
+                "${(_mergedBytes!.length / (1024 * 1024)).toStringAsFixed(2)} MB",
             pdfBytes: _mergedBytes,
-            onDownload: _downloadMergedFile,
+            actions: [
+              ActionButton(
+                onClick: _downloadMergedFile,
+                icon: LucideIcons.download,
+                fullWidth: true,
+                label: "Download Merged PDF",
+                color: Colors.pink,
+              ),
+              ActionButton(
+                onClick: () {
+                  setState(() {
+                    _files.clear();
+                    _mergedBytes = null;
+                  });
+                },
+                icon: LucideIcons.refreshCw,
+                fullWidth: true,
+                label: "Merge More",
+                variant: ActionButtonVariant.secondary,
+              ),
+            ],
           ),
           const SizedBox(height: 24),
           OutlinedButton.icon(

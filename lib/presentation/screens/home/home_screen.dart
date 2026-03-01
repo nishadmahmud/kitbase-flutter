@@ -115,7 +115,14 @@ class HomeScreen extends StatelessWidget {
                   children: ToolsRegistry.categories.map((category) {
                     return FractionallySizedBox(
                       widthFactor: 0.48, // 2 columns
-                      child: CategoryCard(category: category, onTap: () {}),
+                      child: CategoryCard(
+                        category: category,
+                        onTap: () {
+                          Navigator.of(
+                            context,
+                          ).pushNamed('/category/${category.slug}');
+                        },
+                      ),
                     );
                   }).toList(),
                 ),

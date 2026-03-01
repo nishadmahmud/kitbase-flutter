@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'dart:typed_data';
 import 'pdf_thumbnail.dart';
 
@@ -7,18 +6,16 @@ class ToolResult extends StatelessWidget {
   final bool success;
   final String message;
   final String? fileSize;
-  final VoidCallback? onDownload;
   final Uint8List? pdfBytes;
-  final String? downloadButtonText;
+  final List<Widget>? actions;
 
   const ToolResult({
     super.key,
     required this.success,
     required this.message,
     this.fileSize,
-    this.onDownload,
     this.pdfBytes,
-    this.downloadButtonText = 'Download',
+    this.actions,
   });
 
   @override
@@ -35,7 +32,6 @@ class ToolResult extends StatelessWidget {
     final textColor = success
         ? (isDark ? Colors.green[400]! : Colors.green[700]!)
         : (isDark ? Colors.red[400]! : Colors.red[700]!);
-    final buttonColor = success ? Colors.green[500]! : Colors.red[500]!;
 
     return Container(
       margin: const EdgeInsets.only(top: 24),
@@ -106,33 +102,16 @@ class ToolResult extends StatelessWidget {
               ],
             ),
           ],
-          if (success && onDownload != null) ...[
+          if (success && actions != null && actions!.isNotEmpty) ...[
             const SizedBox(height: 24),
-            ElevatedButton.icon(
-              onPressed: onDownload,
-              icon: const Icon(
-                LucideIcons.download,
-                size: 18,
-                color: Colors.white,
-              ),
-              label: Text(
-                downloadButtonText!,
-                style: const TextStyle(
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                ),
-              ),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: buttonColor,
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 24,
-                  vertical: 16,
-                ),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                elevation: 0,
-              ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                for (int i = 0; i < actions!.length; i++) ...[
+                  if (i > 0) const SizedBox(width: 16),
+                  Expanded(child: actions![i]),
+                ],
+              ],
             ),
           ],
         ],

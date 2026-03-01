@@ -4,7 +4,9 @@ import 'presentation/layout/main_layout.dart';
 import 'presentation/screens/home/home_screen.dart';
 import 'presentation/screens/all_tools/all_tools_screen.dart';
 import 'presentation/screens/tools/merge_pdf_screen.dart';
+import 'presentation/screens/tools/split_pdf_screen.dart';
 import 'presentation/screens/settings/settings_screen.dart';
+import 'presentation/screens/category/category_screen.dart';
 
 // Very basic routing state for demo purposes without full GoRouter setup yet
 class AppRouter {
@@ -29,7 +31,22 @@ class AppRouter {
       }
     }
 
-    switch (settings.name) {
+    final routeName = settings.name;
+
+    // Dynamic Routes
+    if (routeName != null && routeName.startsWith('/category/')) {
+      final slug = routeName.replaceFirst('/category/', '');
+      return MaterialPageRoute(
+        builder: (context) => MainLayout(
+          currentRoute: routeName,
+          onNavigate: (route) => handleNavigation(context, routeName, route),
+          child: CategoryScreen(slug: slug),
+        ),
+      );
+    }
+
+    // Static Routes
+    switch (routeName) {
       case '/':
         return MaterialPageRoute(
           builder: (context) => MainLayout(
@@ -65,6 +82,15 @@ class AppRouter {
             child: const MergePdfScreen(),
           ),
         );
+      case '/tools/pdf/split':
+        return MaterialPageRoute(
+          builder: (context) => MainLayout(
+            currentRoute: '/tools/pdf/split',
+            onNavigate: (route) =>
+                handleNavigation(context, '/tools/pdf/split', route),
+            child: const SplitPdfScreen(),
+          ),
+        );
       default:
         return MaterialPageRoute(
           builder: (context) => Scaffold(
@@ -91,9 +117,18 @@ class _KitbaseAppState extends State<KitbaseApp> {
 
   void toggleTheme() {
     setState(() {
-      _themeMode = _themeMode == ThemeMode.light
-          ? ThemeMode.dark
-          : ThemeMode.light;
+      if (_themeMode == ThemeMode.system) {
+        final brightness = View.of(
+          context,
+        ).platformDispatcher.platformBrightness;
+        _themeMode = brightness == Brightness.dark
+            ? ThemeMode.light
+            : ThemeMode.dark;
+      } else {
+        _themeMode = _themeMode == ThemeMode.light
+            ? ThemeMode.dark
+            : ThemeMode.light;
+      }
     });
   }
 
@@ -144,7 +179,7 @@ class _ThemeProvider extends InheritedWidget {
 
 // Extension to easily access theme toggle
 extension ThemeExtension on BuildContext {
-  void toggleTheme() => _ThemeProvider.of(this).toggleTheme;
+  void toggleTheme() => _ThemeProvider.of(this).toggleTheme();
   bool get isDarkMode {
     final mode = _ThemeProvider.of(this).themeMode;
     if (mode == ThemeMode.system) {
